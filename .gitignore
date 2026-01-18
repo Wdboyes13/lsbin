@@ -1,0 +1,2 @@
+# I would prefer not to be sued by LF, Microsft, and Apple, so we aren't bundling platform headers
+include/platform
