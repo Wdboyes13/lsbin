@@ -1,6 +1,6 @@
 Just a tool to list libraries linked to an executable, you needa get the headers to build it yourself though, 
 cuz I cant distribute apple and microsofts headers legally. 
-Also you need C++23 I prefer LLVM clang but its not required.
+Also you need C++23 I prefer LLVM clang but its not required. Also need GNU Make.
 
 Copyright (c) 2026 Wdboyes13.
 Licensed under the MIT License. 
