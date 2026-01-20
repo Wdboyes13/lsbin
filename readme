@@ -1,1 +1,6 @@
 Just a tool to list libraries linked to an executable, you needa get the headers to build it yourself though cuz I'm not dealing with microsoft, apple, and LF suing me.
+
+Copyright (c) 2026 Wdboyes13.
+Licensed under the MIT License. 
+Full license text available in the LICENSE file.
+SPDX-License-Identifier: MIT
