@@ -1,14 +1,29 @@
 #include <mach-o/loader.h>
+#include <mag.h>
+#include <mains.h>
 #include <printr.h>
 
-#define VALIDMACHO(PDATA) (((uint32_t)*PDATA) == MH_CIGAM_64)
+int lsbin_machomain(uchar* data) {
+    uint32_t ncmds;
+    uchar* lcmds;
 
-int lsbin_machomain(char* data) {
-    mach_header_64* hdr = (mach_header_64*)data;
+    uint32_t sig = *(uint32_t*)data;
 
-    char* lcmds = data + ((sizeof(mach_header_64) + 7) & ~7);
+    // 64bit magic = 0xfeedfacf, 32bit = 0xfeedface
+    if (sig == MAGIC_MH64 || sig == RMAGIC_MH64) {
+        auto hdr = (mach_header_64*)data;
+        ncmds = hdr->ncmds;
+        lcmds = data + sizeof(*hdr);
+    } else if (sig == MAGIC_MH32 || sig == RMAGIC_MH32) {
+        auto hdr = (mach_header*)data;
+        ncmds = hdr->ncmds;
+        lcmds = data + sizeof(*hdr);
+    } else {
+        printer::eprintln("Unknown file");
+        return 1;
+    }
 
-    for (int i = 0; i < hdr->ncmds; i++) {
+    for (int i = 0; i < ncmds; i++) {
         auto cmd = (load_command*)lcmds;
         if (cmd->cmd == LC_LOAD_DYLIB) {
             auto dcmd = (dylib_command*)cmd;

@@ -1,25 +1,23 @@
+#include <mag.h>
+#include <mains.h>
+#include <pe32.h>
 #include <printr.h>
-#include <windows.h>
 
-int lsbin_pemain(char* data) {
-    auto dos = (IMAGE_DOS_HEADER*)data;
+int lsbin_pemain(uchar* data) {
+    auto nthdrs = (uchar*)&data[*(uint32_t*)&data[0x3c]];
 
-    auto nt = (IMAGE_NT_HEADERS64*)(data + dos->e_lfanew);
-    if (nt->Signature != IMAGE_NT_SIGNATURE) {
-        printer::eprintln("Invalid NT signature");
+    auto nt = (nthdrs64*)nthdrs;
+    if (nt->sig != MAGIC_NT && nt->sig != RMAGIC_NT) {
+        printer::eprintln("Invalid NT signature: got 0x{:x}", nt->sig);
         return 1;
     }
 
-    DWORD importRVA;
-    if (nt->OptionalHeader.Magic == IMAGE_NT_OPTIONAL_HDR64_MAGIC) {
-        importRVA =
-            nt->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT]
-                .VirtualAddress;
+    uint32_t importRVA;
+    if (nt->opthdr.mag == NT_OPTHDR64_MAG) {
+        importRVA = nt->opthdr.datadirs[DIRENT_IMP].vaddr;
     } else {
-        auto nt32 = (IMAGE_NT_HEADERS32*)(data + dos->e_lfanew);
-        importRVA =
-            nt32->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT]
-                .VirtualAddress;
+        auto nt32 = (nthdrs32*)nthdrs;
+        importRVA = nt32->opthdr.datadirs[DIRENT_IMP].vaddr;
     }
 
     if (importRVA == 0) {
@@ -27,33 +25,32 @@ int lsbin_pemain(char* data) {
         return 0;
     }
 
-    auto sections = IMAGE_FIRST_SECTION(nt);
-    DWORD importOffset = 0;
-    for (int i = 0; i < nt->FileHeader.NumberOfSections; i++) {
-        if (importRVA >= sections[i].VirtualAddress &&
-            importRVA <
-                sections[i].VirtualAddress + sections[i].Misc.VirtualSize) {
-            importOffset = importRVA - sections[i].VirtualAddress +
-                           sections[i].PointerToRawData;
-            break;
-        }
-    }
+    auto sects = ((secthdr*)((uintptr_t)(nt) +
+                             ((int)__builtin_offsetof(nthdrs64, opthdr)) +
+                             ((nt))->nthdr.opthdrsz));
 
-    auto rva_to_offset = [&](DWORD rva) -> DWORD {
-        for (int i = 0; i < nt->FileHeader.NumberOfSections; i++) {
-            if (rva >= sections[i].VirtualAddress &&
-                rva <
-                    sections[i].VirtualAddress + sections[i].Misc.VirtualSize) {
-                return rva - sections[i].VirtualAddress +
-                       sections[i].PointerToRawData;
+    auto rva_to_offset = [&](uint32_t rva) -> uint32_t {
+        for (int i = 0; i < nt->nthdr.numsects; i++) {
+            if (rva >= sects[i].vaddr &&
+                rva < sects[i].vaddr + sects[i].virtsz) {
+                return rva - sects[i].vaddr + sects[i].rdataptr;
             }
         }
         return 0;
     };
 
-    auto imports = (IMAGE_IMPORT_DESCRIPTOR*)(data + importOffset);
-    while (imports->Name != 0) {
-        const char* dllName = data + rva_to_offset(imports->Name);
+    uint32_t importOffset = 0;
+    for (int i = 0; i < nt->nthdr.numsects; i++) {
+        if (importRVA >= sects[i].vaddr &&
+            importRVA < sects[i].vaddr + sects[i].virtsz) {
+            importOffset = importRVA - sects[i].vaddr + sects[i].rdataptr;
+            break;
+        }
+    }
+
+    auto imports = (idesc*)(data + importOffset);
+    while (imports->namerva != 0) {
+        const char* dllName = (char*)(data + rva_to_offset(imports->namerva));
         printer::println("Imported DLL: {}", dllName);
         imports++;
     }

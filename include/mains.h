@@ -1,5 +1,10 @@
 #pragma once
 
-int lsbin_elfmain(char* data);
-int lsbin_machomain(char* data);
-int lsbin_pemain(char* data);
+#include <cstdint>
+
+typedef uint8_t uchar;
+
+int lsbin_elf64main(uchar* data);
+int lsbin_elf32main(uchar* data);
+int lsbin_machomain(uchar* data);
+int lsbin_pemain(uchar* data);

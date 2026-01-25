@@ -1,21 +1,16 @@
 #include <elf.h>
+#include <mains.h>
 #include <printr.h>
 
-#define S(CP) (std::string(CP))
+#define S(CP) (std::string((char*)CP))
 
-int lsbin_elfmain(char* data) {
-    if (data[EI_CLASS] != ELFCLASS64) {
-        printer::eprintln("Sorry, this program only works on 64bit files");
-        delete[] data;
-        return 1;
-    }
-
+int lsbin_elf64main(uchar* data) {
     auto ehdr = (Elf64_Ehdr*)data;
     auto shdrs = (Elf64_Shdr*)&data[ehdr->e_shoff];
 
     auto shstrtab = &data[shdrs[ehdr->e_shstrndx].sh_offset];
     Elf64_Dyn* dynsect = NULL;
-    const char* dynstrtab = NULL;
+    const uchar* dynstrtab = NULL;
     int ndtags = 0;
 
     for (int i = 0; i < ehdr->e_shnum; i++) {
@@ -26,7 +21,7 @@ int lsbin_elfmain(char* data) {
         } else if (this_shdr.sh_type == SHT_PROGBITS &&
                    (S(shstrtab + this_shdr.sh_name) == ".interp")) {
             printer::println("Program interpreter: {}",
-                             &data[this_shdr.sh_offset]);
+                             (char*)&data[this_shdr.sh_offset]);
         } else if (this_shdr.sh_type == SHT_STRTAB &&
                    (S(shstrtab + this_shdr.sh_name) == ".dynstr")) {
             dynstrtab = &data[this_shdr.sh_offset];
@@ -42,7 +37,7 @@ int lsbin_elfmain(char* data) {
     for (int i = 0; i < ndtags; i++) {
         if (dynsect[i].d_tag == DT_NEEDED) {
             printer::println("Needed Library: {}",
-                             dynstrtab + dynsect[i].d_un.d_val);
+                             (char*)(dynstrtab + dynsect[i].d_un.d_val));
         }
     }
 
