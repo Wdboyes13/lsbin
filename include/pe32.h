@@ -1,6 +1,8 @@
 #pragma once
 #include <cstdint>
 
+// sources: Microsoft PE/COFF Specification
+
 #define DIRENT_IMP 1
 #define NT_OPTHDR64_MAG 0x20b
 #define NDIRENTS 16

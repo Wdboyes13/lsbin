@@ -1,23 +1,21 @@
-#include <mach-o/loader.h>
+#include <macho.h>
 #include <mag.h>
 #include <mains.h>
 #include <printr.h>
 
-int lsbin_machomain(uchar* data) {
-    uint32_t ncmds;
-    uchar* lcmds;
+#define MHDR32SZ 28
+#define MHDR64SZ 32
 
+int lsbin_machomain(uchar* data) {
+    uchar* lcmds;
     uint32_t sig = *(uint32_t*)data;
+    uint32_t ncmds = *(uint32_t*)&data[16];
 
     // 64bit magic = 0xfeedfacf, 32bit = 0xfeedface
     if (sig == MAGIC_MH64 || sig == RMAGIC_MH64) {
-        auto hdr = (mach_header_64*)data;
-        ncmds = hdr->ncmds;
-        lcmds = data + sizeof(*hdr);
+        lcmds = data + MHDR64SZ;
     } else if (sig == MAGIC_MH32 || sig == RMAGIC_MH32) {
-        auto hdr = (mach_header*)data;
-        ncmds = hdr->ncmds;
-        lcmds = data + sizeof(*hdr);
+        lcmds = data + MHDR32SZ;
     } else {
         printer::eprintln("Unknown file");
         return 1;

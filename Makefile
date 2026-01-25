@@ -1,18 +1,7 @@
-DEV ?= FALSE
-
-ifeq ($(DEV),TRUE)
-CPPFLAGS := \
-	-Iinclude \
-	-Iinclude/platform/windows \
-	-Iinclude/platform/macos   \
-	-Iinclude/platform/linux   \
-	-DWINCROSS
-else
 CPPFLAGS := -Iinclude -DNDEBUG
-endif
 
 CXX ?= clang++
-CXXFLAGS := $(CPPFLAGS) -fms-extensions -std=c++23
+CXXFLAGS := $(CPPFLAGS) -fms-extensions -std=c++23 -DNDEBUG
 
 OUT := lsbin
 

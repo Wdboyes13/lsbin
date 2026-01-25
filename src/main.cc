@@ -5,7 +5,7 @@
 #include <filesystem>
 #include <fstream>
 
-#include <elf.h>
+#include <lelf.h>
 #include <mach-o/loader.h>
 
 int main(int ac, char** av) {
