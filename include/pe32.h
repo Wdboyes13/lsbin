@@ -135,9 +135,3 @@ typedef struct {
     uint16_t nln;            // number of line numbers
     uint32_t chars;          // characteristics
 } secthdr;
-
-#define FOFF(tpy, fld) ((int32_t)__builtin_offsetof(tpy, fld))
-
-#define FIRSTSECT(ntheader, ntheader_t)                                    \
-    ((secthdr*)((uintptr_t)(ntheader) + FIELD_OFFSET(ntheader_t, opthdr) + \
-                ((ntheader))->nthdr.opthdrsz))
