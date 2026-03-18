@@ -4,6 +4,7 @@
 
 #include <cstdint>
 
+// ELF types
 typedef uint32_t Elf32_Addr, Elf32_Off, Elf32_Word;
 typedef uint16_t Elf32_Half;
 typedef int32_t Elf32_Sword;
@@ -14,6 +15,7 @@ typedef uint32_t Elf64_Word;
 typedef int32_t Elf64_SWord;
 typedef int64_t Elf64_Sxword;
 
+// Number of bytes in ELF identifier
 #define EI_NIDENT 16
 
 typedef struct {

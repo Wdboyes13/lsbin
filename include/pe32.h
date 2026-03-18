@@ -3,10 +3,10 @@
 
 // sources: Microsoft PE/COFF Specification
 
-#define DIRENT_IMP 1
-#define NT_OPTHDR64_MAG 0x20b
-#define NDIRENTS 16
-#define SCTNAMSIZ 8 // section name size
+#define DIRENT_IMP 1          // dirent index for import table
+#define NT_OPTHDR64_MAG 0x20b // nt optional header 64bit magic
+#define NDIRENTS 16           // number of directory entries in the opthdr
+#define SCTNAMSIZ 8           // section name size
 
 // Offset to offset of PE header
 const uint32_t PEHDROFFOFF = 0x3c;

@@ -8,13 +8,13 @@
 #include <lelf.h>
 #include <mach-o/loader.h>
 
-int main(int ac, char** av) {
-    if (ac != 2) {
-        printer::eprintln("Expected filename argument\n{} <FILE>", av[0]);
-        return 1;
-    }
+bool is_macho(uint32_t sig) {
+    return (sig == MAGIC_MH64 || sig == RMAGIC_MH64 || sig == MAGIC_MH32 ||
+            sig == RMAGIC_MH32 || sig == MAGIC_MF64 || sig == RMAGIC_MF64 ||
+            sig == MAGIC_MF32 || sig == RMAGIC_MF32);
+}
 
-    auto fname = av[1];
+int process_image(char* fname) {
     auto fsize = std::filesystem::file_size(fname);
 
     if (fsize < 4) {
@@ -40,12 +40,11 @@ int main(int ac, char** av) {
     uint32_t sig32 = *(uint32_t*)data;
     uint16_t sig16 = *(uint16_t*)data;
 
-    if (sig32 == MAGIC_MH64 || sig32 == RMAGIC_MH64 || sig32 == MAGIC_MH32 ||
-        sig32 == RMAGIC_MH32) {
-        printer::println("Mach-O File");
+    if (is_macho(sig32)) {
+        printer::println("Mach-O File: {}", fname);
         ret = lsbin_machomain(data);
     } else if (sig32 == MAGIC_ELF || sig32 == RMAGIC_ELF) {
-        printer::println("ELF File");
+        printer::println("ELF File: {}", fname);
         if (fsize < EI_NIDENT) {
             printer::eprintln("Thought this was ELF but not large enough to "
                               "store a full E_IDENT so it can't be");
@@ -60,7 +59,7 @@ int main(int ac, char** av) {
             printer::eprintln("Unknown ELF class");
         }
     } else if (sig16 == MAGIC_DOS || sig16 == RMAGIC_DOS) {
-        printer::println("PE File");
+        printer::println("PE File: {}", fname);
         ret = lsbin_pemain(data);
     } else {
         printer::eprintln("Unknown file type: Got magic 0x{:08x}", sig32);
@@ -70,4 +69,15 @@ int main(int ac, char** av) {
     delete[] data;
 
     return ret;
+}
+
+int main(int ac, char** av) {
+    if (ac < 2) {
+        printer::eprintln("Expected filename(s) argument\n{} <FILE...>", av[0]);
+        return 1;
+    }
+
+    for (int i = 1; i < ac; i++) {
+        process_image(av[i]);
+    }
 }

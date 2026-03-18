@@ -18,6 +18,8 @@ union lc_str {
     uint32_t offset;
 };
 
+typedef int32_t cpu_subtype_t;
+
 #define LC_LOAD_DYLIB 0xc
 #define LC_LOAD_DYLINKER 0xe
 
@@ -38,4 +40,26 @@ struct dylinker_command {
     uint32_t cmd;
     uint32_t cmdsize;
     union lc_str name;
+};
+
+struct fat_header {
+    uint32_t magic;
+    uint32_t nfat_arch;
+};
+
+struct fat_arch {
+    int32_t cputype;
+    int32_t cpusubtype;
+    uint32_t offset;
+    uint32_t size;
+    uint32_t align;
+};
+
+struct fat_arch_64 {
+    int32_t cputype;
+    int32_t cpusubtype;
+    uint64_t offset;
+    uint64_t size;
+    uint32_t align;
+    uint32_t reserved;
 };
