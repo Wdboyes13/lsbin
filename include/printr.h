@@ -10,11 +10,14 @@
 #include <print>
 #include <string>
 
-#define DEFFMT(RET, NAME) template<typename... Args> \
-static inline RET NAME(std::format_string<Args...> fmt, Args&&... args)
+#define DEFFMT(RET, NAME)      \
+    template<typename... Args> \
+    static inline RET NAME(std::format_string<Args...> fmt, Args&&... args)
 
-#define DEFFILFMT(RET, NAME, FT) template<typename... Args> \
-static inline RET NAME(FT, std::format_string<Args...> fmt, Args&&... args)
+#define DEFFILFMT(RET, NAME, FT)                                \
+    template<typename... Args>                                  \
+    static inline RET NAME(FT, std::format_string<Args...> fmt, \
+                           Args&&... args)
 
 #define FORMAT std::format(fmt, std::forward<Args>(args)...)
 
@@ -24,6 +27,8 @@ using std::print;
 using std::println;
 
 namespace file {
+
+// I'll work on WinAPI functions later, though for now I'm to lazy lmao
 #ifndef _WIN32
 #    include <unistd.h>
 #    include <cstdio>
@@ -43,45 +48,32 @@ DEFFILFMT(int, fdprint, int fd) {
     std::print(f, "{}", FORMAT);
 
     fclose(f);
+    return 0;
 }
 
 // Print line to file desc., returns -1 on error 0 on success
-DEFFILFMT(int, fdprintln, int fd) {
-    fdprint(fd, "{}\n", FORMAT);
-}
+DEFFILFMT(int, fdprintln, int fd) { return fdprint(fd, "{}\n", FORMAT); }
 #endif
 
 // Print to std::fstream
-DEFFILFMT(void, fprint, std::fstream file) {
-    std::print(file, "{}", FORMAT);
-}
+DEFFILFMT(void, fprint, std::fstream& file) { std::print(file, "{}", FORMAT); }
 
 // Print line to std::fstream
-DEFFILFMT(void, fprintln, std::fstream file) {
-    fprint(file, "{}", FORMAT);
-}
+DEFFILFMT(void, fprintln, std::fstream& file) { fprint(file, "{}", FORMAT); }
 
 // Print to C file pointer
-DEFFILFMT(void, fpprint, FILE* file) {
-    std::print(file, "{}", FORMAT);
-}
+DEFFILFMT(void, fpprint, FILE* file) { std::print(file, "{}", FORMAT); }
 
 // Print line to C file pointer
-DEFFILFMT(void, fpprintln, FILE* file) {
-    fpprint(file, "{}", FORMAT);
-}
+DEFFILFMT(void, fpprintln, FILE* file) { fpprint(file, "{}", FORMAT); }
 
 } // namespace file
 
 // Print to standard error (stderr)
-DEFFMT(void, eprint) {
-    std::print(std::cerr, "{}", FORMAT);
-}
+DEFFMT(void, eprint) { std::print(std::cerr, "{}", FORMAT); }
 
 // Print line to standard error (stderr)
-DEFFMT(void, eprintln) {
-    eprint("{}\n", FORMAT);
-}
+DEFFMT(void, eprintln) { eprint("{}\n", FORMAT); }
 
 // Input
 DEFFMT(std::string, input) {
