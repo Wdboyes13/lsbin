@@ -1,9 +1,0 @@
-CompileFlags:
-    Add:
-        - -I/Users/william/dev/work/coding/lsbin/include/platform/windows
-        - -I/Users/william/dev/work/coding/lsbin/include/platform/macos
-        - -I/Users/william/dev/work/coding/lsbin/include/platform/linux
-        - -I/Users/william/dev/work/coding/lsbin/include
-        - -std=c++23
-        - -fms-extensions
-        - -DWINCROSS

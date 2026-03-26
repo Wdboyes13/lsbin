@@ -1,3 +1,4 @@
 *.o
-.clangd
 lsbin
+*build*/
+.clangd
