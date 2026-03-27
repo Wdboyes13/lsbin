@@ -28,3 +28,17 @@ struct ExecFile {
 };
 
 void to_json(nlohmann::json& j, const ExecFile& e);
+void from_json(const nlohmann::json& j, ExecFile& file);
+
+class FileDecodeException : public std::exception {
+  public:
+    FileDecodeException(std::string error, std::string got)
+        : msg(std::format("Failed to decode string \"{}\": {}", error, got)) {}
+
+    const char* what() const noexcept override {
+        return msg.c_str();
+    }
+
+  private:
+    std::string msg;
+};

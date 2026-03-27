@@ -2,9 +2,13 @@
 
 int main() {
     auto out_opt = run_lsbin_test("a.exe");
-    if (!out_opt) { return 1; }
+    if (!out_opt) {
+        return 1;
+    }
     auto out_vec = out_opt.value();
-    if (out_vec.size() != 1) { return 1; }
+    if (out_vec.size() != 1) {
+        return 1;
+    }
     auto out = out_vec.at(0);
 
     if (out.type.arch == Arch::A64 &&

@@ -21,12 +21,15 @@ config_inc = include_directories(
 
 testinc = [
     include_directories('.'), 
-    config_inc, 
-    include_directories('../include/third_party'),
-    include_directories('../include')
+    config_inc,
 ]
 
-testlib_tgt = shared_library('testlib', sources: 'test_lib.cc', include_directories: testinc)
+testlib_tgt = shared_library(
+    'testlib', 
+    sources: 'test_lib.cc', 
+    include_directories: testinc,
+    dependencies: lsbin_fmt
+)
 
 testlib = declare_dependency(link_with: testlib_tgt, include_directories: testinc)
 
@@ -41,7 +44,7 @@ foreach name, src : tests
     test(name, executable(
         src.replace('.cc', ''),
         src,
-        dependencies: testlib,
-        install: false
+        dependencies: [testlib, lsbin_fmt],
+        install: false,
     ))
 endforeach

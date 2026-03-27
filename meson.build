@@ -22,13 +22,14 @@ if build_type != 'debug' and build_type != 'debugoptimized'
     endif
 endif
 
+subdir('lib')
+
 sources = files(
     'src/formats/elf32.cc',
     'src/formats/elf64.cc',
     'src/formats/macho.cc',
     'src/formats/pe.cc',
 
-    'src/file.cc',
     'src/output.cc',
     'src/image.cc',
     'src/args.cc',
@@ -40,10 +41,8 @@ executable(
     meson.project_name(),
     sources,
     cpp_args: cppargs,
-    include_directories: [
-        include_directories('include'),
-        include_directories('include/third_party')
-    ],
+    include_directories: include_directories('include'),
+    dependencies: lsbin_fmt,
     install: true
 )
 
