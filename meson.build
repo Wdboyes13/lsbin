@@ -26,10 +26,14 @@ sources = files(
     'src/elf32_main.cc',
     'src/elf64_main.cc',
     'src/macho_main.cc',
-    'src/main.cc',
     'src/pe_main.cc',
+
     'src/file.cc',
-    'src/printer.cc'
+    'src/printer.cc',
+    'src/image.cc',
+    'src/args.cc',
+
+    'src/main.cc',
 )
 
 executable(

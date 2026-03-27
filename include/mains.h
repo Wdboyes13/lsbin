@@ -20,3 +20,4 @@ enum class PrintFormat {
 };
 
 void output_main(exe_vec res, PrintFormat fmt);
+exefn_result process_image(const char* fname);
