@@ -1,9 +1,9 @@
+#include <file.h>
+#include <formats/pe32.h>
 #include <mag.h>
 #include <mains.h>
-#include <formats/pe32.h>
 #include <printr.h>
 #include <filesystem>
-#include <file.h>
 
 exefn_result lsbin_pemain(uchar* data, const char* fname) {
     auto nthdrs = (uchar*)&data[*(uint32_t*)&data[0x3c]];
@@ -11,11 +11,8 @@ exefn_result lsbin_pemain(uchar* data, const char* fname) {
     ExecFile file{
         .path = std::filesystem::absolute(fname),
         .type = {
-            .format = ExecFile::Type::PE
-        },
-        .info = {
-            .interp = ""
-        }
+            .format = ExecFile::Type::PE },
+        .info = { .interp = "" }
     };
 
     auto nt = (nthdrs64*)nthdrs;
@@ -36,7 +33,7 @@ exefn_result lsbin_pemain(uchar* data, const char* fname) {
 
     if (import_rva == 0) {
         printer::println("No imports");
-        return exe_vec{file};
+        return exe_vec{ file };
     }
 
     auto sects = ((secthdr*)((uintptr_t)(nt) +
@@ -68,5 +65,5 @@ exefn_result lsbin_pemain(uchar* data, const char* fname) {
         imports++;
     }
 
-    return exe_vec{file};
+    return exe_vec{ file };
 }

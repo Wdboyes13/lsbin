@@ -1,8 +1,8 @@
+#include <file.h>
 #include <formats/macho.h>
 #include <mag.h>
 #include <mains.h>
 #include <printr.h>
-#include <file.h>
 #include <filesystem>
 
 #define MHDR32SZ 28

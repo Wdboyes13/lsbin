@@ -1,10 +1,10 @@
+#include <mag.h>
 #include <mains.h>
 #include <printr.h>
-#include <fstream>
-#include <filesystem>
 #include <cstdint>
+#include <filesystem>
+#include <fstream>
 #include <optional>
-#include <mag.h>
 
 #include <formats/elf.h>
 
@@ -33,8 +33,7 @@ exefn_result process_image(const char* fname) {
 
     std::vector<uchar> data{
         std::istreambuf_iterator<char>(file),
-        std::istreambuf_iterator<char>()
-    };
+        std::istreambuf_iterator<char>()};
 
     file.close();
 

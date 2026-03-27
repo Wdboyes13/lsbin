@@ -58,8 +58,7 @@ Args& Args::parse() {
         "\t--json, -j\tOutput JSON data\n"
         "\t--text, -t\tOutput plaintext data, default\n"
         "\t--license, -l\tPrint license and copyright\n",
-        arg_v[0]
-    );
+        arg_v[0]);
     exit(0);
 }
 

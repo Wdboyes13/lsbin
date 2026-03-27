@@ -27,15 +27,17 @@ std::string arch_to_text(Arch arch) {
 }
 
 void to_json(nlohmann::json& j, const ExecFile& e) {
-    j = json({
-        {"file", {
-            {"path", e.path},
-            {"format", format_to_text(e.type.format)},
-            {"arch", arch_to_text(e.type.arch)}
-        }},
-        {"info", {
-            {"interp", e.info.interp},
-            {"libraries", e.info.libraries}
-        }}
-    });
+    auto file_obj = json{
+        { "path", e.path },
+        { "format", format_to_text(e.type.format) },
+        { "arch", arch_to_text(e.type.arch) }
+    };
+
+    auto info_obj = json{
+        { "interp", e.info.interp },
+        { "libraries", e.info.libraries }
+    };
+
+    j = json({ { "file", file_obj },
+               { "info", info_obj } });
 }

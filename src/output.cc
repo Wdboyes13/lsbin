@@ -1,8 +1,8 @@
-#include <mains.h>
 #include <file.h>
-#include <json.hpp>
+#include <mains.h>
 #include <printr.h>
 #include <format>
+#include <json.hpp>
 
 using namespace nlohmann;
 
@@ -18,47 +18,61 @@ void output_text_main(exe_vec res) {
         std::string format, arch;
         switch (file.type.format) {
             case Fmt::ELF:
-                format = "ELF"; break;
+                format = "ELF";
+                break;
             case Fmt::PE:
-                format = "PE"; break;
+                format = "PE";
+                break;
             case Fmt::MACH_O:
-                format = "MachO"; break;
+                format = "MachO";
+                break;
             case Fmt::FAT_MACH_O:
-                format = "FAT MachO"; break;
+                format = "FAT MachO";
+                break;
         }
 
         switch (file.type.arch) {
             case Arch::A32:
-                arch = "32"; break;
+                arch = "32";
+                break;
             case Arch::A64:
-                arch = "64"; break;
+                arch = "64";
+                break;
         }
 
         return std::format("{}({})", format, arch);
     };
 
     enum FieldType {
-        INTERP, LIBRARY
+        INTERP,
+        LIBRARY
     };
 
     const auto format_field = [](
-        const ExecFile& file, 
-        const std::string& field, 
-        FieldType type
-    ) -> std::string {
+                                  const ExecFile& file,
+                                  const std::string& field,
+                                  FieldType type) -> std::string {
         std::string pre_string;
         switch (file.type.format) {
             case Fmt::PE: {
                 switch (type) {
-                    case INTERP: pre_string = ""; break; // PE doesnt have interp
-                    case LIBRARY: pre_string = "Imported DLL"; break;
+                    case INTERP:
+                        pre_string = "";
+                        break; // PE doesnt have interp
+                    case LIBRARY:
+                        pre_string = "Imported DLL";
+                        break;
                 }
                 break;
             }
             case Fmt::ELF: {
                 switch (type) {
-                    case INTERP: pre_string = "Program Interpreter"; break; // PE doesnt have interp
-                    case LIBRARY: pre_string = "Needed Library"; break;
+                    case INTERP:
+                        pre_string = "Program Interpreter";
+                        break;
+                    case LIBRARY:
+                        pre_string = "Needed Library";
+                        break;
                 }
                 break;
             }
@@ -66,8 +80,12 @@ void output_text_main(exe_vec res) {
             case Fmt::MACH_O:
             case Fmt::FAT_MACH_O: {
                 switch (type) {
-                    case INTERP: pre_string = "Load Dylinker"; break; // PE doesnt have interp
-                    case LIBRARY: pre_string = "Load Dylib"; break;
+                    case INTERP:
+                        pre_string = "Load Dylinker";
+                        break;
+                    case LIBRARY:
+                        pre_string = "Load Dylib";
+                        break;
                 }
                 break;
             }

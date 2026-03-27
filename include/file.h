@@ -1,22 +1,23 @@
 #pragma once
 // common structs for files
 
+#include <json.hpp>
 #include <string>
 #include <vector>
-#include <json.hpp>
 
 struct ExecFile {
     std::string path;
     struct Type {
         enum Fmt {
-            PE, 
+            PE,
             ELF,
-            MACH_O, 
+            MACH_O,
             FAT_MACH_O
         } format;
 
         enum Arch {
-            A32, A64
+            A32,
+            A64
         } arch;
     } type;
 

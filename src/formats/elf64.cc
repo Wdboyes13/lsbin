@@ -1,8 +1,8 @@
+#include <file.h>
 #include <formats/elf.h>
 #include <mains.h>
 #include <printr.h>
 #include <filesystem>
-#include <file.h>
 
 #define S(CP) (std::string((char*)CP))
 
@@ -17,10 +17,9 @@ exefn_result lsbin_elf64main(uchar* data, const char* fname) {
 
     ExecFile file{
         .path = std::filesystem::absolute(fname),
-        .type {
+        .type{
             .format = ExecFile::Type::ELF,
-            .arch = ExecFile::Type::A64
-        },
+            .arch = ExecFile::Type::A64 },
         .info{}
     };
 
@@ -49,5 +48,5 @@ exefn_result lsbin_elf64main(uchar* data, const char* fname) {
         }
     }
 
-    return exe_vec{file};
+    return exe_vec{ file };
 }
