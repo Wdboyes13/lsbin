@@ -30,32 +30,18 @@ testlib_tgt = shared_library('testlib', sources: 'test_lib.cc', include_director
 
 testlib = declare_dependency(link_with: testlib_tgt, include_directories: testinc)
 
-test(
-    'PE Test',
-    executable(
-        'pe_test',
-        'pe_test.cc',
+tests = {
+    'PE Test': 'pe_test.cc',
+    'ELF Test': 'elf_test.cc',
+    'MachO Test': 'macho_test.cc',
+    'FAT MachO Test': 'fatmacho_test.cc',
+}
+
+foreach name, src : tests
+    test(name, executable(
+        src.replace('.cc', ''),
+        src,
         dependencies: testlib,
-        install: false,
-    ),
-)
-
-test(
-    'ELF Test',
-    executable('elf_test', 'elf_test.cc', dependencies: testlib, install: false),
-)
-
-test(
-    'MachO Test',
-    executable('macho_test', 'macho_test.cc', dependencies: testlib, install: false),
-)
-
-test(
-    'FAT MachO Test',
-    executable(
-        'fat_macho_test',
-        'fatmacho_test.cc',
-        dependencies: testlib,
-        install: false,
-    ),
-)
+        install: false
+    ))
+endforeach
