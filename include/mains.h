@@ -19,5 +19,5 @@ enum class PrintFormat {
     TEXT  
 };
 
-void output_main(exe_vec res, PrintFormat fmt);
+void output(exe_vec res, PrintFormat fmt);
 exefn_result process_image(const char* fname);

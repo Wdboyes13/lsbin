@@ -88,7 +88,7 @@ void output_text_main(exe_vec res) {
     }
 }
 
-void output_main(exe_vec res, PrintFormat fmt) {
+void output(exe_vec res, PrintFormat fmt) {
     switch (fmt) {
         case PrintFormat::TEXT:
             return output_text_main(res);

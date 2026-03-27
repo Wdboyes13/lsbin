@@ -29,7 +29,7 @@ sources = files(
     'src/formats/pe.cc',
 
     'src/file.cc',
-    'src/printer.cc',
+    'src/output.cc',
     'src/image.cc',
     'src/args.cc',
 

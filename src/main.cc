@@ -16,6 +16,6 @@ int main(int ac, char** av) {
         results.append_range(result.value()); 
     }
 
-    output_main(results, args.fmt);
+    output(results, args.fmt);
     return 0;
 }
