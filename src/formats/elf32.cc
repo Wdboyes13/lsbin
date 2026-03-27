@@ -16,7 +16,7 @@ exefn_result lsbin_elf32main(uchar* data, const char* fname) {
     int ndtags = 0;
 
     ExecFile file{
-        .path = std::filesystem::absolute(fname),
+        .path = std::filesystem::canonical(fname),
         .type{
             .format = ExecFile::Type::ELF,
             .arch = ExecFile::Type::A32 },

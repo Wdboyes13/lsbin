@@ -59,7 +59,7 @@ exefn_result lsbin_machomain(uchar* data, const char* fname) {
 
                 auto pret = process_macho(tsig, tncmds, (uchar*)&data[offset], true);
                 if (pret.has_value()) {
-                    pret.value().path = std::filesystem::absolute(fname).string() + ":" + std::to_string(i);
+                    pret.value().path = std::filesystem::canonical(fname).string() + ":" + std::to_string(i);
                     ret.push_back(pret.value());
                 } else {
                     return std::nullopt;
@@ -76,7 +76,7 @@ exefn_result lsbin_machomain(uchar* data, const char* fname) {
     } else {
         auto pret = process_macho(sig, *(uint32_t*)&data[16], data);
         if (pret.has_value()) {
-            pret.value().path = std::filesystem::absolute(fname);
+            pret.value().path = std::filesystem::canonical(fname);
             ret.push_back(pret.value());
         } else {
             return std::nullopt;

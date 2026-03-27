@@ -9,7 +9,7 @@ exefn_result lsbin_pemain(uchar* data, const char* fname) {
     auto nthdrs = (uchar*)&data[*(uint32_t*)&data[0x3c]];
 
     ExecFile file{
-        .path = std::filesystem::absolute(fname),
+        .path = std::filesystem::canonical(fname),
         .type = {
             .format = ExecFile::Type::PE },
         .info = { .interp = "" }

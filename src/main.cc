@@ -1,6 +1,5 @@
 #include <args.h>
 #include <mains.h>
-#include <printr.h>
 
 int main(int ac, char** av) {
     exe_vec results;

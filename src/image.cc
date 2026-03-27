@@ -2,7 +2,6 @@
 #include <mains.h>
 #include <printr.h>
 #include <cstdint>
-#include <filesystem>
 #include <fstream>
 #include <optional>
 
@@ -15,16 +14,6 @@ bool is_macho(uint32_t sig) {
 }
 
 exefn_result process_image(const char* fname) {
-    auto fsize = std::filesystem::file_size(fname);
-
-    if (fsize < 4) {
-        printer::eprintln(
-            "This file couldn't possibly be an executable\n"
-            "It's only {} bytes we need 4 bytes to check file type",
-            fsize);
-        return std::nullopt;
-    }
-
     std::ifstream file(fname, std::ios::binary);
     if (!file) {
         printer::eprintln("Failed to open file");
@@ -37,6 +26,14 @@ exefn_result process_image(const char* fname) {
 
     file.close();
 
+    if (data.size() < 4) {
+        printer::eprintln(
+            "This file couldn't possibly be an executable\n"
+            "It's only {} bytes we need 4 bytes to check file type",
+            data.size());
+        return std::nullopt;
+    }
+
     exefn_result ret;
     uint32_t sig32 = *(uint32_t*)data.data();
     uint16_t sig16 = *(uint16_t*)data.data();
@@ -44,7 +41,7 @@ exefn_result process_image(const char* fname) {
     if (is_macho(sig32)) {
         ret = lsbin_machomain(data.data(), fname);
     } else if (sig32 == MAGIC_ELF || sig32 == RMAGIC_ELF) {
-        if (fsize < EI_NIDENT) {
+        if (data.size() < EI_NIDENT) {
             printer::eprintln("Thought this was ELF but not large enough to "
                               "store a full E_IDENT so it can't be");
             return std::nullopt;
@@ -61,6 +58,7 @@ exefn_result process_image(const char* fname) {
         ret = lsbin_pemain(data.data(), fname);
     } else {
         printer::eprintln("Unknown file type: Got magic 0x{:08x}", sig32);
+        return std::nullopt;
     }
 
     return ret;
