@@ -57,6 +57,7 @@ int process_image(char* fname) {
             ret = lsbin_elf64main(data);
         } else {
             printer::eprintln("Unknown ELF class");
+            ret = 1;
         }
     } else if (sig16 == MAGIC_DOS || sig16 == RMAGIC_DOS) {
         printer::println("PE File: {}", fname);

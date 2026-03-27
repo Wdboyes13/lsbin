@@ -12,15 +12,15 @@ int lsbin_pemain(uchar* data) {
         return 1;
     }
 
-    uint32_t importRVA;
+    uint32_t import_rva;
     if (nt->opthdr.mag == NT_OPTHDR64_MAG) {
-        importRVA = nt->opthdr.datadirs[DIRENT_IMP].vaddr;
+        import_rva = nt->opthdr.datadirs[DIRENT_IMP].vaddr;
     } else {
         auto nt32 = (nthdrs32*)nthdrs;
-        importRVA = nt32->opthdr.datadirs[DIRENT_IMP].vaddr;
+        import_rva = nt32->opthdr.datadirs[DIRENT_IMP].vaddr;
     }
 
-    if (importRVA == 0) {
+    if (import_rva == 0) {
         printer::println("No imports");
         return 0;
     }
@@ -39,19 +39,19 @@ int lsbin_pemain(uchar* data) {
         return 0;
     };
 
-    uint32_t importOffset = 0;
+    uint32_t import_offset = 0;
     for (int i = 0; i < nt->nthdr.numsects; i++) {
-        if (importRVA >= sects[i].vaddr &&
-            importRVA < sects[i].vaddr + sects[i].virtsz) {
-            importOffset = importRVA - sects[i].vaddr + sects[i].rdataptr;
+        if (import_rva >= sects[i].vaddr &&
+            import_rva < sects[i].vaddr + sects[i].virtsz) {
+            import_offset = import_rva - sects[i].vaddr + sects[i].rdataptr;
             break;
         }
     }
 
-    auto imports = (idesc*)(data + importOffset);
+    auto imports = (idesc*)(data + import_offset);
     while (imports->namerva != 0) {
-        const char* dllName = (char*)(data + rva_to_offset(imports->namerva));
-        printer::println("Imported DLL: {}", dllName);
+        printer::println("Imported DLL: {}", 
+            (char*)(data + rva_to_offset(imports->namerva)));
         imports++;
     }
 
