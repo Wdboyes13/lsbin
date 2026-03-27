@@ -1,18 +1,23 @@
 #include <test_lib.h>
-#include <format>
+
+bool is_arch_ok(const ExecFile& out) {
+    return (out.type.arch == Arch::A64 &&
+        out.type.format == Fmt::FAT_MACH_O &&
+        out.info.interp == "/usr/lib/dyld" &&
+        out.info.libraries.size() == 2 &&
+        has_lib(out, "/usr/lib/libc++.1.dylib") &&
+        has_lib(out, "/usr/lib/libSystem.B.dylib"));
+}
 
 int main() {
-    auto out = run_lsbin_test("a.fat_macho");
-    return (out == std::format("Mach-O File: {}\n"
-                               "FAT Index: 1\n"
-                               "Load dylinker: /usr/lib/dyld\n"
-                               "Load dylib: /usr/lib/libc++.1.dylib\n"
-                               "Load dylib: /usr/lib/libSystem.B.dylib\n"
-                               "FAT Index: 2\n"
-                               "Load dylinker: /usr/lib/dyld\n"
-                               "Load dylib: /usr/lib/libc++.1.dylib\n"
-                               "Load dylib: /usr/lib/libSystem.B.dylib\n",
-                               test_file_path("a.fat_macho")))
-               ? 0
-               : 1;
+    auto out_opt = run_lsbin_test("a.fat_macho");
+    if (!out_opt) { return 1; }
+    auto out_vec = out_opt.value();
+    if (out_vec.size() != 2) { return 1; }
+    
+    if (is_arch_ok(out_vec.at(0)) && is_arch_ok(out_vec.at(1))) {
+        return 0;
+    } else {
+        return 1;
+    }
 }

@@ -19,7 +19,12 @@ config_inc = include_directories(
     ),
 )
 
-testinc = [include_directories('.'), config_inc]
+testinc = [
+    include_directories('.'), 
+    config_inc, 
+    include_directories('../include/third_party'),
+    include_directories('../include')
+]
 
 testlib_tgt = shared_library('testlib', sources: 'test_lib.cc', include_directories: testinc)
 

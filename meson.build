@@ -28,13 +28,18 @@ sources = files(
     'src/macho_main.cc',
     'src/main.cc',
     'src/pe_main.cc',
+    'src/file.cc',
+    'src/printer.cc'
 )
 
 executable(
     meson.project_name(),
     sources,
     cpp_args: cppargs,
-    include_directories: include_directories('include'),
+    include_directories: [
+        include_directories('include'),
+        include_directories('include/third_party')
+    ],
 )
 
 subdir('tests')

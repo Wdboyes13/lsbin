@@ -1,7 +1,0 @@
-Just a tool to list libraries linked to an executable. Format headers are provided because I actually read the spec.
-Also you need C++23 I prefer LLVM clang but its not required. Also need GNU Make.
-
-Copyright (c) 2026 Wdboyes13.
-Licensed under the MIT License.
-Full license text available in the LICENSE file.
-SPDX-License-Identifier: MIT

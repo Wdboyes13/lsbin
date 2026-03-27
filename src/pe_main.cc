@@ -1,28 +1,42 @@
 #include <mag.h>
 #include <mains.h>
-#include <pe32.h>
+#include <formats/pe32.h>
 #include <printr.h>
+#include <filesystem>
+#include <file.h>
 
-int lsbin_pemain(uchar* data) {
+exefn_result lsbin_pemain(uchar* data, const char* fname) {
     auto nthdrs = (uchar*)&data[*(uint32_t*)&data[0x3c]];
+
+    ExecFile file{
+        .path = std::filesystem::absolute(fname),
+        .type = {
+            .format = ExecFile::Type::PE
+        },
+        .info = {
+            .interp = ""
+        }
+    };
 
     auto nt = (nthdrs64*)nthdrs;
     if (nt->sig != MAGIC_NT && nt->sig != RMAGIC_NT) {
         printer::eprintln("Invalid NT signature: got 0x{:x}", nt->sig);
-        return 1;
+        return std::nullopt;
     }
 
     uint32_t import_rva;
     if (nt->opthdr.mag == NT_OPTHDR64_MAG) {
+        file.type.arch = ExecFile::Type::A64;
         import_rva = nt->opthdr.datadirs[DIRENT_IMP].vaddr;
     } else {
+        file.type.arch = ExecFile::Type::A32;
         auto nt32 = (nthdrs32*)nthdrs;
         import_rva = nt32->opthdr.datadirs[DIRENT_IMP].vaddr;
     }
 
     if (import_rva == 0) {
         printer::println("No imports");
-        return 0;
+        return exe_vec{file};
     }
 
     auto sects = ((secthdr*)((uintptr_t)(nt) +
@@ -50,10 +64,9 @@ int lsbin_pemain(uchar* data) {
 
     auto imports = (idesc*)(data + import_offset);
     while (imports->namerva != 0) {
-        printer::println("Imported DLL: {}", 
-            (char*)(data + rva_to_offset(imports->namerva)));
+        file.info.libraries.push_back((char*)(data + rva_to_offset(imports->namerva)));
         imports++;
     }
 
-    return 0;
+    return exe_vec{file};
 }
