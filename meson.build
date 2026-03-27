@@ -23,10 +23,10 @@ if build_type != 'debug' and build_type != 'debugoptimized'
 endif
 
 sources = files(
-    'src/elf32_main.cc',
-    'src/elf64_main.cc',
-    'src/macho_main.cc',
-    'src/pe_main.cc',
+    'src/formats/elf32.cc',
+    'src/formats/elf64.cc',
+    'src/formats/macho.cc',
+    'src/formats/pe.cc',
 
     'src/file.cc',
     'src/printer.cc',
