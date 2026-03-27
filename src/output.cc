@@ -29,9 +29,9 @@ void output_text_main(exe_vec res) {
 
         switch (file.type.arch) {
             case Arch::A32:
-                arch = "64"; break;
-            case Arch::A64:
                 arch = "32"; break;
+            case Arch::A64:
+                arch = "64"; break;
         }
 
         return std::format("{}({})", format, arch);
