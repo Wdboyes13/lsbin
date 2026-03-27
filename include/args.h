@@ -2,7 +2,7 @@
 #include <printr.h>
 
 struct Args {
-    PrintFormat fmt;
+    PrintFormat fmt = PrintFormat::TEXT;
     std::vector<std::string> files;
 
     Args& argc(int argc);

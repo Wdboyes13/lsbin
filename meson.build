@@ -44,6 +44,7 @@ executable(
         include_directories('include'),
         include_directories('include/third_party')
     ],
+    install: true
 )
 
 subdir('tests')
