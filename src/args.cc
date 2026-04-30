@@ -37,6 +37,11 @@ Args& Args::parse() {
                 do_license();
             }
 
+            if (arg == "--github" || arg == "-g") {
+                printer::println("GitHub: https://github.com/Wdboyes13/lsbin");
+                exit(0);
+            }
+
             if (arg == "--") {
                 process_args = false;
                 continue;
@@ -52,12 +57,13 @@ Args& Args::parse() {
 [[noreturn]] void Args::do_help() {
     printer::println(
         "{} [OPTIONS] <FILE...>\n\n"
-        "FILE\tThe files(s) to process\n"
+        "FILE    The files(s) to process\n"
         "Options:\n"
-        "\t--help, -h\tShow this text and exit\n"
-        "\t--json, -j\tOutput JSON data\n"
-        "\t--text, -t\tOutput plaintext data, default\n"
-        "\t--license, -l\tPrint license and copyright\n",
+        "    --help, -h       Show this text and exit\n"
+        "    --json, -j       Output JSON data\n"
+        "    --text, -t       Output plaintext data, default\n"
+        "    --license, -l    Print license and copyright and exits\n"
+        "    --github, -g     Prints the GitHub link and exits",
         arg_v[0]);
     exit(0);
 }
