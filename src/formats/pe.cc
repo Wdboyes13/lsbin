@@ -32,7 +32,6 @@ exefn_result lsbin_pemain(uchar* data, const char* fname) {
     }
 
     if (import_rva == 0) {
-        printer::println("No imports");
         return exe_vec{ file };
     }
 

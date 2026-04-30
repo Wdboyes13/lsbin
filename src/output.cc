@@ -96,8 +96,26 @@ void output_text_main(exe_vec res) {
 
     for (const auto& file : res) {
         printer::println("{} File: {}", type_string(file), file.path);
-        if (file.type.format != Fmt::PE) {
+        if (file.type.format != Fmt::PE && !file.info.interp.empty()) {
             printer::println("\t{}", format_field(file, file.info.interp, INTERP));
+        }
+
+        if (file.info.libraries.empty()) {
+            switch (file.type.format) {
+                case Fmt::PE: {
+                    printer::println("\tNo Imports");
+                    continue;
+                }
+                case Fmt::MACH_O:
+                case Fmt::FAT_MACH_O: {
+                    printer::println("\tNo loaded dylibs");
+                    continue;
+                }
+                case Fmt::ELF: {
+                    printer::println("\tNo needed libraries");
+                    continue;
+                }
+            }
         }
 
         for (const auto& lib : file.info.libraries) {

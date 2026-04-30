@@ -38,8 +38,7 @@ exefn_result lsbin_elf64main(uchar* data, const char* fname) {
     }
 
     if (dynstrtab == NULL || dynsect == NULL) {
-        printer::eprintln("This is not a valid dynamic ELF");
-        return std::nullopt;
+        return exe_vec{ file };
     }
 
     for (int i = 0; i < ndtags; i++) {
